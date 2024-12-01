@@ -1,6 +1,16 @@
-import { TSESLint } from '@typescript-eslint/experimental-utils';
-import rule from '../../src/rules/must-use-result';
-import { MessageIds } from '../../src/utils';
+import path from 'node:path';
+
+import { RuleTester } from '@typescript-eslint/rule-tester';
+import tseslint from 'typescript-eslint';
+import * as vitest from 'vitest';
+
+import { MessageIds } from '../utils.js';
+import { rule } from './must-use-result.js';
+
+RuleTester.afterAll = vitest.afterAll;
+RuleTester.it = vitest.it;
+RuleTester.itOnly = vitest.it.only;
+RuleTester.describe = vitest.describe;
 
 function injectResult(name: string, text: string) {
   return (
@@ -74,9 +84,20 @@ const obj: { get: () => Result<string, Error> }
   );
 }
 
-new TSESLint.RuleTester({
-  parser: require.resolve('@typescript-eslint/parser'),
-}).run('must-use-result', rule, {
+const ruleTester = new RuleTester({
+  languageOptions: {
+    parser: tseslint.parser,
+    parserOptions: {
+      projectService: {
+        allowDefaultProject: ['*.ts*'],
+        defaultProject: 'tsconfig.json',
+      },
+      tsconfigRootDir: path.join(__dirname, '../..'),
+    },
+  },
+});
+
+ruleTester.run('must-use-result', rule, {
   valid: [
     injectResult(
       'call unwrapOr',

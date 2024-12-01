@@ -8,40 +8,35 @@
 Use [npm](https://www.npmjs.com/) or a compatible tool to install.
 
 ```bash
-npm install --save-dev eslint eslint-plugin-neverthrow @typescript-eslint/parser
+# npm
+npm install --save-dev @bufferings/eslint-plugin-neverthrow
+
+# pnpm
+pnpm install --save-dev @bufferings/eslint-plugin-neverthrow
 ```
 
 ### Requirements
 
-- Node.js v8.10.0 or newer versions.
-- ESLint v5.16.0 or newer versions.
-- @typescript-eslint/parser
+- Node.js v18.0.0 or newer versions.
+- ESLint v9.0.0 or newer versions.
 
 ## Usage
 
 Write your config file such as `.eslintrc.js`.
 
 ```js
-module.exports = {
-  plugins: ['neverthrow'],
-  rules: {
-    'neverthrow/must-use-result': 'error',
-  },
-  parser: '@typescript-eslint/parser',
-  parserOptions: {
-    ecmaVersion: 2021,
-    sourceType: 'module',
-    project: ['./tsconfig.json'],
-    tsconfigRootDir: __dirname,
-  },
-};
+import eslint from '@eslint/js';
+import tseslint from 'typescript-eslint';
+import neverthrowPlugin from '@bufferings/eslint-plugin-neverthrow';
+
+export default tseslint.config(
+  eslint.configs.recommended,
+  tseslint.configs.recommended,
+  neverthrowPlugin.configs.recommended
+);
 ```
 
-See also [Configuring ESLint](https://eslint.org/docs/user-guide/configuring).
-
-## Configs
-
-- `neverthrow/recommended` ... enables the recommended rules.
+See also [Configure ESLint - ESLint](https://eslint.org/docs/latest/use/configure/).
 
 ## Rules
 
@@ -49,8 +44,8 @@ See also [Configuring ESLint](https://eslint.org/docs/user-guide/configuring).
 
 ### Possible Errors
 
-| Rule ID                                                       | Description                                                                                |     |
-| :------------------------------------------------------------ | :----------------------------------------------------------------------------------------- | :-: |
+| Rule ID                                                       | Description                                                                               |     |
+| :------------------------------------------------------------ | :---------------------------------------------------------------------------------------- | :-: |
 | [neverthrow/must-use-result](./docs/rules/must-use-result.md) | Not handling neverthrow result is a possible error because errors could remain unhandled. | ⭐️ |
 
 <!--RULE_TABLE_END-->
@@ -61,7 +56,7 @@ This plugin follows [Semantic Versioning](http://semver.org/) and [ESLint's Sema
 
 ## Changelog
 
-- [GitHub Releases](https://github.com/mdbetancourt/eslint-plugin-neverthrow/releases)
+- [GitHub Releases](https://github.com/bufferings/eslint-plugin-neverthrow/releases)
 
 ## Contributing
 
@@ -71,8 +66,6 @@ See also [ESLint Contribution Guide](https://eslint.org/docs/developer-guide/con
 
 ### Development Tools
 
-- `npm test` runs tests.
-- `npm run update` updates the package version. And it updates `src/configs/recommended.ts`, `lib/index.ts`, and `README.md`'s rule table. See also [npm version CLI command](https://docs.npmjs.com/cli/version).
-- `npm run add-rule <RULE_ID>` creates three files to add a new rule.
+- `pnpm test` runs tests.
 
-**forked from [mysticatea/template-eslint-plugin](https://github.com/mysticatea/template-eslint-plugin)**
+**forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)**

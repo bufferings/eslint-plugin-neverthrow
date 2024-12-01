@@ -14,11 +14,11 @@ Examples of **incorrect** code:
 
 // result without unwrapOr, match or any error handler
 const result = getResult();
-result.map(() => {})
+result.map(() => {});
 
 // result used just as parameter
-const v = getResult()
-externaFunction(v)
+const v = getResult();
+externaFunction(v);
 ```
 
 Examples of **correct** code:
@@ -26,14 +26,14 @@ Examples of **correct** code:
 ```js
 /*eslint neverthrow/must-use-result: error */
 
-const result = getResult()
+const result = getResult();
 
-result.unwrapOr()
+result.unwrapOr();
 
 // after call a map
-const result = getResult()
+const result = getResult();
 
-result.map(() => {}).unwrapOr('')
+result.map(() => {}).unwrapOr('');
 ```
 
 ## Options
