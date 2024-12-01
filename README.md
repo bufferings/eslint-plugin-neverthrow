@@ -1,7 +1,7 @@
-# eslint-plugin-neverthrow
+# [WIP] eslint-plugin-neverthrow
 
-[![npm version](https://img.shields.io/npm/v/eslint-plugin-neverthrow.svg)](https://www.npmjs.com/package/eslint-plugin-neverthrow)
-[![Downloads/month](https://img.shields.io/npm/dm/eslint-plugin-neverthrow.svg)](http://www.npmtrends.com/eslint-plugin-neverthrow)
+[![npm version](https://img.shields.io/npm/v/@bufferings/eslint-plugin-neverthrow.svg)](https://www.npmjs.com/package/@bufferings/eslint-plugin-neverthrow)
+[![Downloads/month](https://img.shields.io/npm/dm/@bufferings/eslint-plugin-neverthrow.svg)](http://www.npmtrends.com/@bufferings/eslint-plugin-neverthrow)
 
 ## Installation
 

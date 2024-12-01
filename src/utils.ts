@@ -12,5 +12,5 @@ export interface ExampleTypedLintingRuleDocs {
 
 export const createRule = ESLintUtils.RuleCreator<ExampleTypedLintingRuleDocs>(
   (name) =>
-    `https://github.com/typescript-eslint/examples/tree/main/eslint-plugin-example-typed-linting/docs/${name}.md`
+    `https://github.com/bufferings/eslint-plugin-neverthrow/tree/main/docs/rules/${name}.md`
 );
