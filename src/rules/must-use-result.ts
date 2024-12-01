@@ -1,11 +1,12 @@
-import { TypeChecker } from 'typescript';
-import { unionTypeParts } from 'tsutils';
 import { TSESTree } from '@typescript-eslint/types';
-import type {
-  TSESLint,
-  ParserServices,
-} from '@typescript-eslint/experimental-utils';
-import { MessageIds } from '../utils';
+import { AST_NODE_TYPES } from '@typescript-eslint/types';
+import type { ParserServices, TSESLint } from '@typescript-eslint/utils';
+import { ESLintUtils } from '@typescript-eslint/utils';
+import { unionTypeParts } from 'tsutils';
+import { TypeChecker } from 'typescript';
+
+import { MessageIds } from '../utils.js';
+import { createRule } from '../utils.js';
 
 function matchAny(nodeTypes: string[]) {
   return `:matches(${nodeTypes.join(', ')})`;
@@ -27,11 +28,11 @@ const resultProperties = [
 
 const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
 
-// evalua dentro de la expresion si es result
-// si es result chequea que sea manejada en el la expresion
-// si no es manejada revisa si es asignada o usada como argumento para una funcion
-// si fue asignada sin manejar revisa todo el bloque de la variable por manejos
-// de resto fue manejada adecuadamente
+// evaluates inside the expression if it is result
+// if result check that it is handled in the expression
+// if it is unhandled checks if it is assigned or used as an argument to a function
+// if it was assigned unhandled checks the entire variable block for handles
+//   otherwise it was handled properly
 
 function isResultLike(
   checker: TypeChecker,
@@ -56,26 +57,26 @@ function isResultLike(
 
 function findMemberName(node?: TSESTree.MemberExpression): string | null {
   if (!node) return null;
-  if (node.property.type !== 'Identifier') return null;
+  if (node.property.type !== AST_NODE_TYPES.Identifier) return null;
 
   return node.property.name;
 }
 
 function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
-  if (node?.parent?.type !== 'CallExpression') return false;
+  if (node?.parent?.type !== AST_NODE_TYPES.CallExpression) return false;
   return node.parent.callee === node;
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
   const memberExpresion = node.parent;
-  if (memberExpresion?.type === 'MemberExpression') {
+  if (memberExpresion?.type === AST_NODE_TYPES.MemberExpression) {
     const methodName = findMemberName(memberExpresion);
     const methodIsCalled = isMemberCalledFn(memberExpresion);
     if (methodName && handledMethods.includes(methodName) && methodIsCalled) {
       return true;
     }
     const parent = node.parent?.parent; // search for chain method .map().handler
-    if (parent && parent?.type !== 'ExpressionStatement') {
+    if (parent && parent?.type !== AST_NODE_TYPES.ExpressionStatement) {
       return isHandledResult(parent);
     }
   }
@@ -88,9 +89,9 @@ function getAssignation(
   node: TSESTree.Node
 ): TSESTree.Identifier | undefined {
   if (
-    node.type === 'VariableDeclarator' &&
+    node.type === AST_NODE_TYPES.VariableDeclarator &&
     isResultLike(checker, parserServices, node.init) &&
-    node.id.type === 'Identifier'
+    node.id.type === AST_NODE_TYPES.Identifier
   ) {
     return node.id;
   }
@@ -105,16 +106,16 @@ function isReturned(
   parserServices: ParserServices,
   node: TSESTree.Node
 ): boolean {
-  if (node.type === 'ArrowFunctionExpression') {
+  if (node.type === AST_NODE_TYPES.ArrowFunctionExpression) {
     return true;
   }
-  if (node.type === 'ReturnStatement') {
+  if (node.type === AST_NODE_TYPES.ReturnStatement) {
     return true;
   }
-  if (node.type === 'BlockStatement') {
+  if (node.type === AST_NODE_TYPES.BlockStatement) {
     return false;
   }
-  if (node.type === 'Program') {
+  if (node.type === AST_NODE_TYPES.Program) {
     return false;
   }
   if (!node.parent) {
@@ -156,7 +157,7 @@ function processSelector(
   }
 
   const assignedTo = getAssignation(checker, parserServices, node);
-  const currentScope = context.getScope();
+  const currentScope = context.sourceCode.getScope(node);
 
   // Check if is assigned
   if (assignedTo) {
@@ -183,28 +184,12 @@ function processSelector(
   return true;
 }
 
-const rule: TSESLint.RuleModule<MessageIds, []> = {
-  meta: {
-    docs: {
-      description:
-        'Not handling neverthrow result is a possible error because errors could remain unhandleds.',
-      recommended: 'error',
-      category: 'Possible Errors',
-      url: '',
-    },
-    messages: {
-      mustUseResult:
-        'Result must be handled with either of match, unwrapOr or _unsafeUnwrap.',
-    },
-    schema: [],
-    type: 'problem',
-  },
-
+export const rule = createRule({
   create(context) {
-    const parserServices = context.parserServices;
-    const checker = parserServices?.program?.getTypeChecker();
+    const services = ESLintUtils.getParserServices(context);
+    const checker = services?.program?.getTypeChecker();
 
-    if (!checker || !parserServices) {
+    if (!checker || !services) {
       throw Error(
         'types not available, maybe you need set the parser to @typescript-eslint/parser'
       );
@@ -212,10 +197,24 @@ const rule: TSESLint.RuleModule<MessageIds, []> = {
 
     return {
       [resultSelector](node: TSESTree.Node) {
-        return processSelector(context, checker, parserServices, node);
+        return processSelector(context, checker, services, node);
       },
     };
   },
-};
-
-export = rule;
+  meta: {
+    docs: {
+      description:
+        'Not handling neverthrow result is a possible error because errors could remain unhandled.',
+      recommended: true,
+      requiresTypeChecking: true,
+    },
+    messages: {
+      mustUseResult:
+        'Result must be handled with either of match, unwrapOr or _unsafeUnwrap.',
+    },
+    type: 'problem',
+    schema: [],
+  },
+  name: 'must-use-result',
+  defaultOptions: [],
+});
