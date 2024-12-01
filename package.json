@@ -3,7 +3,7 @@
   "version": "0.0.0-development",
   "description": "",
   "engines": {
-    "node": "^22.11.0"
+    "node": ">=18.0.0"
   },
   "type": "module",
   "main": "dist/index.js",
@@ -60,7 +60,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/bufferings/eslint-plugin-neverthrow"
+    "url": "git+https://github.com/bufferings/eslint-plugin-neverthrow.git"
   },
   "keywords": [
     "eslint",
