@@ -3,7 +3,7 @@ import fs from 'fs';
 import { rules } from './rules/index.js';
 
 const { name, version } = JSON.parse(
-  fs.readFileSync(new URL('./package.json', import.meta.url), 'utf8')
+  fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
 ) as {
   name: string;
   version: string;
