@@ -23,7 +23,9 @@ const recommended = {
   plugins: {
     neverthrow: plugin,
   },
-  rules,
+  rules: {
+    'neverthrow/must-use-result': 'error',
+  },
 };
 
 export default plugin;
