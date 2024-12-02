@@ -5,7 +5,7 @@
 
 ## Notice
 
-This is forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)\*\*
+forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)
 
 ## Installation
 
