@@ -22,7 +22,7 @@ pnpm install --save-dev @bufferings/eslint-plugin-neverthrow
 
 ## Usage
 
-Write your config file such as `.eslintrc.js`.
+Write your config file such as `eslint.config.js`.
 
 ```js
 import eslint from '@eslint/js';
@@ -31,8 +31,18 @@ import neverthrowPlugin from '@bufferings/eslint-plugin-neverthrow';
 
 export default tseslint.config(
   eslint.configs.recommended,
-  tseslint.configs.recommended,
-  neverthrowPlugin.configs.recommended
+  tseslint.configs.recommendedTypeChecked,
+  neverthrowPlugin.configs.recommended,
+  {
+    languageOptions: {
+      parserOptions: {
+        projectService: {
+          allowDefaultProject: ['*.config.*'],
+        },
+        tsconfigRootDir: import.meta.dirname,
+      },
+    },
+  }
 );
 ```
 
@@ -62,7 +72,7 @@ This plugin follows [Semantic Versioning](http://semver.org/) and [ESLint's Sema
 
 Welcome your contribution!
 
-See also [ESLint Contribution Guide](https://eslint.org/docs/developer-guide/contributing/).
+See also [Contribute to ESLint](https://eslint.org/docs/latest/contribute/).
 
 ### Development Tools
 
