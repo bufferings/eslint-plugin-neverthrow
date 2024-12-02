@@ -1,7 +1,11 @@
-# [WIP] eslint-plugin-neverthrow
+# eslint-plugin-neverthrow
 
 [![npm version](https://img.shields.io/npm/v/@bufferings/eslint-plugin-neverthrow.svg)](https://www.npmjs.com/package/@bufferings/eslint-plugin-neverthrow)
 [![Downloads/month](https://img.shields.io/npm/dm/@bufferings/eslint-plugin-neverthrow.svg)](http://www.npmtrends.com/@bufferings/eslint-plugin-neverthrow)
+
+## Notice
+
+This is forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)\*\*
 
 ## Installation
 
@@ -74,8 +78,6 @@ Welcome your contribution!
 
 See also [Contribute to ESLint](https://eslint.org/docs/latest/contribute/).
 
-### Development Tools
+## Development Tools
 
 - `pnpm test` runs tests.
-
-**forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)**
