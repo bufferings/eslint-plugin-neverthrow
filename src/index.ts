@@ -1,8 +1,10 @@
+import fs from 'fs';
+
 import { rules } from './rules/index.js';
 
-// note - cannot migrate this to an import statement because it will make TSC copy the package.json to the dist folder
-// eslint-disable-next-line @typescript-eslint/no-require-imports
-const { name, version } = require('../package.json') as {
+const { name, version } = JSON.parse(
+  fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
+) as {
   name: string;
   version: string;
 };
