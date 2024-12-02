@@ -9,7 +9,7 @@ export default tseslint.config(
     ignores: ['**/dist/', '**/.gitignore'],
   },
   eslint.configs.recommended,
-  ...tseslint.configs.recommendedTypeChecked,
+  tseslint.configs.recommendedTypeChecked,
   eslintPlugin.configs['flat/recommended'],
   {
     languageOptions: {

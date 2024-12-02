@@ -1,12 +1,13 @@
-import { TSESTree } from '@typescript-eslint/types';
-import { AST_NODE_TYPES } from '@typescript-eslint/types';
-import type { ParserServices, TSESLint } from '@typescript-eslint/utils';
-import { ESLintUtils } from '@typescript-eslint/utils';
+import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/types';
+import {
+  ESLintUtils,
+  type ParserServices,
+  type TSESLint,
+} from '@typescript-eslint/utils';
 import { unionTypeParts } from 'tsutils';
 import { TypeChecker } from 'typescript';
 
-import { MessageIds } from '../utils.js';
-import { createRule } from '../utils.js';
+import { createRule, MessageIds } from '../utils.js';
 
 function matchAny(nodeTypes: string[]) {
   return `:matches(${nodeTypes.join(', ')})`;
