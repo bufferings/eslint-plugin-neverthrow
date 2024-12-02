@@ -1,31 +1,27 @@
-import fs from 'fs';
-
 import { rules } from './rules/index.js';
 
-const { name, version } = JSON.parse(
-  fs.readFileSync(new URL('../package.json', import.meta.url), 'utf8')
-) as {
+// note - cannot migrate this to an import statement because it will make TSC copy the package.json to the dist folder
+// eslint-disable-next-line @typescript-eslint/no-require-imports
+const { name, version } = require('../package.json') as {
   name: string;
   version: string;
 };
 
 const plugin = {
   meta: { name, version },
-  configs: {},
+  configs: {
+    get recommended() {
+      return recommended;
+    },
+  },
   rules,
 };
 
-Object.assign(plugin.configs, {
-  recommended: [
-    {
-      plugins: {
-        neverthrow: plugin,
-      },
-      rules: {
-        'neverthrow/must-use-result': 'error',
-      },
-    },
-  ],
-});
+const recommended = {
+  plugins: {
+    neverthrow: plugin,
+  },
+  rules,
+};
 
 export default plugin;
