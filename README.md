@@ -6,6 +6,7 @@
 ## Notice
 
 forked from [mdbetancourt/eslint-plugin-neverthrow](https://github.com/mdbetancourt/eslint-plugin-neverthrow)
+to support flat config.
 
 ## Installation
 
