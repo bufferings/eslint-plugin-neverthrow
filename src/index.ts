@@ -10,7 +10,7 @@ const { name, version } = JSON.parse(
   version: string;
 };
 
-const plugin: FlatConfig.Plugin = {
+const plugin = {
   meta: { name, version },
   configs: {
     get recommended() {
