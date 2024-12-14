@@ -1,3 +1,4 @@
+import { FlatConfig } from '@typescript-eslint/utils/ts-eslint';
 import fs from 'fs';
 
 import { rules } from './rules/index.js';
@@ -9,7 +10,7 @@ const { name, version } = JSON.parse(
   version: string;
 };
 
-const plugin = {
+const plugin: FlatConfig.Plugin = {
   meta: { name, version },
   configs: {
     get recommended() {
@@ -19,7 +20,7 @@ const plugin = {
   rules,
 };
 
-const recommended = {
+const recommended: FlatConfig.Config = {
   plugins: {
     neverthrow: plugin,
   },
