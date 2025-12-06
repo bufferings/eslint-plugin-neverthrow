@@ -274,7 +274,7 @@ ruleTester.run('must-use-result', rule, {
     },
     {
       code: injectResult(
-        'Await Promise is not handled properly',
+        'isOk property access without call',
         `
         const res = getResult();
         if (res.isOk) {
