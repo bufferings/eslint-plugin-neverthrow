@@ -22,7 +22,7 @@ pnpm install --save-dev @bufferings/eslint-plugin-neverthrow
 
 ### Requirements
 
-- Node.js v18.0.0 or newer versions.
+- Node.js v20.0.0 or newer versions.
 - ESLint v9.0.0 or newer versions.
 
 ## Usage
@@ -31,10 +31,11 @@ Write your config file such as `eslint.config.js`.
 
 ```js
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import { defineConfig } from 'eslint/config';
 import neverthrowPlugin from '@bufferings/eslint-plugin-neverthrow';
+import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
+export default defineConfig(
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   neverthrowPlugin.configs.recommended,
