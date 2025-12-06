@@ -72,10 +72,10 @@ function isHandledResult(node: TSESTree.Node): boolean {
     return isHandledResult(node.argument);
   }
 
-  const memberExpresion = node.parent;
-  if (memberExpresion?.type === AST_NODE_TYPES.MemberExpression) {
-    const methodName = findMemberName(memberExpresion);
-    const methodIsCalled = isMemberCalledFn(memberExpresion);
+  const memberExpression = node.parent;
+  if (memberExpression?.type === AST_NODE_TYPES.MemberExpression) {
+    const methodName = findMemberName(memberExpression);
+    const methodIsCalled = isMemberCalledFn(memberExpression);
     if (methodName && handledMethods.includes(methodName) && methodIsCalled) {
       return true;
     }
