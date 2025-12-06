@@ -1,6 +1,5 @@
 ---
 description: Git and GitHub CLI rules for this project
-globs:
 alwaysApply: false
 ---
 
