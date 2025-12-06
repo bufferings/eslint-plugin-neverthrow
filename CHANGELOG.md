@@ -1,0 +1,16 @@
+# @bufferings/eslint-plugin-neverthrow
+
+## 0.3.0-beta.0
+
+### Minor Changes
+
+- [#19](https://github.com/bufferings/eslint-plugin-neverthrow/pull/19) [`5bb28a8`](https://github.com/bufferings/eslint-plugin-neverthrow/commit/5bb28a8710e19007a42a612cd5db86c814bf9a8b) Thanks [@dependabot](https://github.com/apps/dependabot)! - Fix type portability issues and align typescript-eslint versions
+  - Add explicit type annotations to fix non-portable inferred types
+  - Remove deprecated @types/eslint\_\_js stub package
+  - Upgrade @typescript-eslint/utils to 8.48.0 to align with other typescript-eslint packages
+  - Update peerDependencies to require @typescript-eslint/parser >=8.48.0
+  - Drop Node.js 18 support (EOL April 2025), require Node.js >=20.0.0
+
+### Patch Changes
+
+- [#16](https://github.com/bufferings/eslint-plugin-neverthrow/pull/16) [`66b020f`](https://github.com/bufferings/eslint-plugin-neverthrow/commit/66b020fecef2f826c82c478b769587c1c231ccb3) Thanks [@bufferings](https://github.com/bufferings)! - Migrate from semantic-release to changesets for release management
