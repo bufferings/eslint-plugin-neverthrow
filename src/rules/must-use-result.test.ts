@@ -172,6 +172,14 @@ ruleTester.run('must-use-result', rule, {
       }
       `
     ),
+    injectResult(
+      'Class property with Result type should not report error',
+      `
+      class MyClass {
+        result = getResult();
+      }
+      `
+    ),
   ],
   invalid: [
     {

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import {
   AST_NODE_TYPES,
   ESLintUtils,
@@ -15,10 +14,10 @@ function matchAny(nodeTypes: string[]) {
   return `:matches(${nodeTypes.join(', ')})`;
 }
 const resultSelector = matchAny([
-  // 'Identifier',
-  'CallExpression',
-  'NewExpression',
-  'AwaitExpression',
+  // AST_NODE_TYPES.Identifier,
+  AST_NODE_TYPES.CallExpression,
+  AST_NODE_TYPES.NewExpression,
+  AST_NODE_TYPES.AwaitExpression,
 ]);
 
 const resultProperties = [
@@ -69,7 +68,7 @@ function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
 
 function isHandledResult(node: TSESTree.Node): boolean {
   // For AwaitExpression, check if the awaited result is handled
-  if (node.type === 'AwaitExpression') {
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
     return isHandledResult(node.argument);
   }
 
@@ -89,14 +88,14 @@ function isHandledResult(node: TSESTree.Node): boolean {
 }
 
 const isCheckedResult = (node: TSESTree.Node): boolean => {
-  if (node.type === 'Identifier') {
-    if (node.parent?.type === 'MemberExpression') {
+  if (node.type === AST_NODE_TYPES.Identifier) {
+    if (node.parent?.type === AST_NODE_TYPES.MemberExpression) {
       const propertyName =
-        node.parent.property.type === 'Identifier'
+        node.parent.property.type === AST_NODE_TYPES.Identifier
           ? node.parent.property.name
           : null;
       const parentIsCalledExpression =
-        node.parent.parent?.type === 'CallExpression';
+        node.parent.parent?.type === AST_NODE_TYPES.CallExpression;
       return (
         !!propertyName &&
         checkedMethods.includes(propertyName) &&
@@ -107,7 +106,7 @@ const isCheckedResult = (node: TSESTree.Node): boolean => {
   return false;
 };
 
-const endTransverse = ['BlockStatement', 'Program'];
+const endTransverse = [AST_NODE_TYPES.BlockStatement, AST_NODE_TYPES.Program];
 function getAssignation(
   checker: TypeChecker,
   parserServices: ParserServices,
@@ -143,7 +142,7 @@ function isReturned(
   if (node.type === AST_NODE_TYPES.Program) {
     return false;
   }
-  if (node.type === 'AwaitExpression') {
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
     // For AwaitExpression, check if the parent is returned
     if (!node.parent) {
       return false;
@@ -157,10 +156,10 @@ function isReturned(
 }
 
 const ignoreParents = [
-  'ClassDeclaration',
-  'FunctionDeclaration',
-  'MethodDefinition',
-  'ClassProperty',
+  AST_NODE_TYPES.ClassDeclaration,
+  AST_NODE_TYPES.FunctionDeclaration,
+  AST_NODE_TYPES.MethodDefinition,
+  AST_NODE_TYPES.PropertyDefinition,
 ];
 
 /**
@@ -182,7 +181,7 @@ function processSelector(
   }
 
   // For AwaitExpression, check if the argument is result-like
-  if (node.type === 'AwaitExpression') {
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
     if (!isResultLike(checker, parserServices, node.argument)) {
       return false;
     }
@@ -195,8 +194,8 @@ function processSelector(
 
   // Skip CallExpression nodes that are inside AwaitExpression to avoid duplicate reporting
   if (
-    node.type === 'CallExpression' &&
-    node.parent?.type === 'AwaitExpression'
+    node.type === AST_NODE_TYPES.CallExpression &&
+    node.parent?.type === AST_NODE_TYPES.AwaitExpression
   ) {
     return false;
   }
