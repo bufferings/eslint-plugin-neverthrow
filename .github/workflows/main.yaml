@@ -26,6 +26,10 @@ jobs:
         with:
           node-version: '22.x'
           cache: 'pnpm'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Update npm to fix OIDC issue
+        run: npm install -g npm@latest
 
       - name: Install dependencies
         run: pnpm install
