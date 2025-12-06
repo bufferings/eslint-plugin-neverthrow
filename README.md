@@ -61,7 +61,7 @@ See also [Configure ESLint - ESLint](https://eslint.org/docs/latest/use/configur
 
 | Rule ID                                                       | Description                                                                               |     |
 | :------------------------------------------------------------ | :---------------------------------------------------------------------------------------- | :-: |
-| [neverthrow/must-use-result](./docs/rules/must-use-result.md) | Not handling neverthrow result is a possible error because errors could remain unhandled. | ⭐️ |
+| [neverthrow/must-use-result](./docs/rules/must-use-result.md) | Not handling neverthrow result is a possible error because errors could remain unhandled. | ⭐️  |
 
 <!--RULE_TABLE_END-->
 

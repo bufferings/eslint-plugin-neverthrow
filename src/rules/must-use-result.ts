@@ -1,8 +1,9 @@
-import { AST_NODE_TYPES, TSESTree } from '@typescript-eslint/types';
 import {
+  AST_NODE_TYPES,
   ESLintUtils,
   type ParserServices,
   type TSESLint,
+  TSESTree,
 } from '@typescript-eslint/utils';
 import { unionTypeParts } from 'tsutils';
 import { TypeChecker } from 'typescript';
