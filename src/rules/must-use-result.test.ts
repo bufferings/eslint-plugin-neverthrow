@@ -77,6 +77,7 @@ declare class Err<T, E> implements IResult<T, E> {
 }
 
 declare function getResult(): Result<string, Error>
+declare function asyncGetResult(): Promise<Result<string, Error>>
 declare function getNormal(): number
 const obj: { get: () => Result<string, Error> }
 
@@ -178,6 +179,15 @@ ruleTester.run('must-use-result', rule, {
       class MyClass {
         result = getResult();
       }
+      `
+    ),
+    injectResult(
+      'Await Promise<Result> handled properly',
+      `
+      (await asyncGetResult()).unwrapOr(5);
+      const res1 = (await asyncGetResult()).unwrapOr(5);
+      const res2 = await asyncGetResult();
+      res2.unwrapOr(5);
       `
     ),
   ],
@@ -283,6 +293,23 @@ ruleTester.run('must-use-result', rule, {
         `
       ),
       errors: [{ messageId: MessageIds.MUST_USE }],
+    },
+    {
+      code: injectResult(
+        'Await Promise<Result> is not handled properly',
+        `
+        const res = await asyncGetResult();
+        const res1 = await asyncGetResult();
+        res1.unwrapOr;
+        
+        await asyncGetResult();
+        `
+      ),
+      errors: [
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+      ],
     },
   ],
 });

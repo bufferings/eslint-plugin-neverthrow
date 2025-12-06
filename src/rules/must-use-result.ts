@@ -67,11 +67,6 @@ function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
-  // For AwaitExpression, check if the awaited result is handled
-  if (node.type === AST_NODE_TYPES.AwaitExpression) {
-    return isHandledResult(node.argument);
-  }
-
   const memberExpression = node.parent;
   if (memberExpression?.type === AST_NODE_TYPES.MemberExpression) {
     const methodName = findMemberName(memberExpression);
@@ -180,16 +175,10 @@ function processSelector(
     return false;
   }
 
-  // For AwaitExpression, check if the argument is result-like
-  if (node.type === AST_NODE_TYPES.AwaitExpression) {
-    if (!isResultLike(checker, parserServices, node.argument)) {
-      return false;
-    }
-  } else {
-    // For other node types, check if the node itself is result-like
-    if (!isResultLike(checker, parserServices, node)) {
-      return false;
-    }
+  // Check if the node itself is result-like
+  // For AwaitExpression, this checks the awaited result type (e.g., Result from Promise<Result>)
+  if (!isResultLike(checker, parserServices, node)) {
+    return false;
   }
 
   // Skip CallExpression nodes that are inside AwaitExpression to avoid duplicate reporting
