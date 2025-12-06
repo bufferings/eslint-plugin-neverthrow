@@ -9,74 +9,74 @@ importers:
   .:
     dependencies:
       '@typescript-eslint/utils':
-        specifier: ^8.16.0
+        specifier: 8.16.0
         version: 8.16.0(eslint@9.16.0)(typescript@5.7.2)
       tsutils:
-        specifier: ^3.21.0
+        specifier: 3.21.0
         version: 3.21.0(typescript@5.7.2)
     devDependencies:
       '@changesets/changelog-github':
-        specifier: ^0.5.2
+        specifier: 0.5.2
         version: 0.5.2
       '@changesets/cli':
-        specifier: ^2.29.8
+        specifier: 2.29.8
         version: 2.29.8(@types/node@22.10.1)
       '@eslint/js':
-        specifier: ^9.16.0
+        specifier: 9.16.0
         version: 9.16.0
       '@types/eslint':
-        specifier: ^9.6.1
+        specifier: 9.6.1
         version: 9.6.1
       '@types/eslint__js':
-        specifier: ^8.42.3
+        specifier: 8.42.3
         version: 8.42.3
       '@types/node':
-        specifier: ^22.10.1
+        specifier: 22.10.1
         version: 22.10.1
       '@typescript-eslint/parser':
-        specifier: ^8.16.0
+        specifier: 8.16.0
         version: 8.16.0(eslint@9.16.0)(typescript@5.7.2)
       '@typescript-eslint/rule-tester':
-        specifier: ^8.16.0
+        specifier: 8.16.0
         version: 8.16.0(eslint@9.16.0)(typescript@5.7.2)
       eslint:
-        specifier: ^9.16.0
+        specifier: 9.16.0
         version: 9.16.0
       eslint-config-prettier:
-        specifier: ^9.1.0
+        specifier: 9.1.0
         version: 9.1.0(eslint@9.16.0)
       eslint-plugin-eslint-plugin:
-        specifier: ^6.3.2
+        specifier: 6.3.2
         version: 6.3.2(eslint@9.16.0)
       eslint-plugin-n:
-        specifier: ^17.14.0
+        specifier: 17.14.0
         version: 17.14.0(eslint@9.16.0)
       eslint-plugin-simple-import-sort:
-        specifier: ^12.1.1
+        specifier: 12.1.1
         version: 12.1.1(eslint@9.16.0)
       husky:
-        specifier: ^9.1.7
+        specifier: 9.1.7
         version: 9.1.7
       lint-staged:
-        specifier: ^15.2.10
+        specifier: 15.2.10
         version: 15.2.10
       neverthrow:
-        specifier: ^8.1.1
+        specifier: 8.1.1
         version: 8.1.1
       prettier:
-        specifier: ^3.4.1
+        specifier: 3.4.1
         version: 3.4.1
       rimraf:
-        specifier: ^6.0.1
+        specifier: 6.0.1
         version: 6.0.1
       typescript:
-        specifier: ^5.7.2
+        specifier: 5.7.2
         version: 5.7.2
       typescript-eslint:
-        specifier: ^8.16.0
+        specifier: 8.16.0
         version: 8.16.0(eslint@9.16.0)(typescript@5.7.2)
       vitest:
-        specifier: ^2.1.6
+        specifier: 2.1.6
         version: 2.1.6(@types/node@22.10.1)(yaml@2.5.1)
 
 packages:
@@ -1055,10 +1055,6 @@ packages:
     resolution: {integrity: sha512-PMSmkqxr106Xa156c2M265Z+FTrPl+oxd/rgOQy2tijQeK5TxQ43psO1ZCwhVOSdnn+RzkzlRz/eY4BgJBYVpg==}
     hasBin: true
 
-  js-yaml@4.1.0:
-    resolution: {integrity: sha512-wpxZs9NoxZaJESJGIZTyDEaYpl0FKSA+FB9aJiyemKhMwkxQg63h4T1KJgUGHpTqPDNRcmmYLugrRjJlBtWvRA==}
-    hasBin: true
-
   js-yaml@4.1.1:
     resolution: {integrity: sha512-qQKT4zQxXl8lLwBtHMWwaTcGfFOZviOJet3Oy/xmGk2gZH677CJM9EvtfdSkgWcATZhj/55JZ0rmy3myCT5lsA==}
     hasBin: true
@@ -1891,7 +1887,7 @@ snapshots:
       globals: 14.0.0
       ignore: 5.3.2
       import-fresh: 3.3.0
-      js-yaml: 4.1.0
+      js-yaml: 4.1.1
       minimatch: 3.1.2
       strip-json-comments: 3.1.1
     transitivePeerDependencies:
@@ -2639,10 +2635,6 @@ snapshots:
     dependencies:
       argparse: 1.0.10
       esprima: 4.0.1
-
-  js-yaml@4.1.0:
-    dependencies:
-      argparse: 2.0.1
 
   js-yaml@4.1.1:
     dependencies:
