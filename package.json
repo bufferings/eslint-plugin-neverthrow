@@ -1,6 +1,6 @@
 {
   "name": "@bufferings/eslint-plugin-neverthrow",
-  "version": "0.3.0-beta.1",
+  "version": "0.3.0-beta.2",
   "description": "",
   "engines": {
     "node": ">=20.0.0"

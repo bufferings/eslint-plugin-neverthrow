@@ -1,5 +1,11 @@
 # @bufferings/eslint-plugin-neverthrow
 
+## 0.3.0-beta.2
+
+### Patch Changes
+
+- [#33](https://github.com/bufferings/eslint-plugin-neverthrow/pull/33) [`c7d68a8`](https://github.com/bufferings/eslint-plugin-neverthrow/commit/c7d68a82a35c42bc584ef5892d1c6900ef752e1b) Thanks [@bufferings](https://github.com/bufferings)! - fix: detect `await Promise<Result>` correctly in `must-use-result` rule
+
 ## 0.3.0-beta.1
 
 ### Patch Changes

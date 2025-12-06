@@ -5,6 +5,7 @@
     "@bufferings/eslint-plugin-neverthrow": "0.2.12"
   },
   "changesets": [
+    "fix-await-promise-result",
     "fix-result-detection",
     "fix-type-portability",
     "migrate-to-changesets"
