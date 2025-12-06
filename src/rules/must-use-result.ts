@@ -163,7 +163,7 @@ const ignoreParents = [
 ];
 
 /**
- * @returns A boolean indicates if the node is not handled.
+ * @returns A boolean indicating whether the node is not handled.
  */
 function processSelector(
   context: TSESLint.RuleContext<MessageIds, []>,
