@@ -17,6 +17,7 @@ const resultSelector = matchAny([
   // 'Identifier',
   'CallExpression',
   'NewExpression',
+  'AwaitExpression',
 ]);
 
 const resultProperties = [
@@ -133,12 +134,16 @@ const ignoreParents = [
   'ClassProperty',
 ];
 
+/**
+ * @returns A boolean indicates if the node is not handled.
+ */
 function processSelector(
   context: TSESLint.RuleContext<MessageIds, []>,
   checker: TypeChecker,
   parserServices: ParserServices,
   node: TSESTree.Node,
-  reportAs = node
+  reportAs = node,
+  isReferenceNode = false
 ): boolean {
   if (node.parent?.type.startsWith('TS')) {
     return false;
@@ -158,31 +163,25 @@ function processSelector(
     return false;
   }
 
-  const assignedTo = getAssignation(checker, parserServices, node);
-  const currentScope = context.sourceCode.getScope(node);
-
-  // Check if is assigned
-  if (assignedTo) {
-    const variable = currentScope.set.get(assignedTo.name);
-    const references =
-      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
-    if (references.length > 0) {
-      return references.some((ref) =>
-        processSelector(
-          context,
-          checker,
-          parserServices,
-          ref.identifier,
-          reportAs
-        )
-      );
-    }
+  const anyHandled = handleAssignation(
+    context,
+    checker,
+    parserServices,
+    node,
+    reportAs
+  );
+  if (anyHandled) {
+    return false;
   }
 
-  context.report({
-    node: reportAs,
-    messageId: MessageIds.MUST_USE,
-  });
+  // make sure not reporting to the same node mutiple times during recursing calls
+  if (!isReferenceNode) {
+    context.report({
+      node: reportAs,
+      messageId: MessageIds.MUST_USE,
+    });
+  }
+
   return true;
 }
 
@@ -220,3 +219,42 @@ export const rule = createRule({
   name: 'must-use-result',
   defaultOptions: [],
 });
+
+function handleAssignation(
+  context: TSESLint.RuleContext<MessageIds, []>,
+  checker: TypeChecker,
+  parserServices: ParserServices,
+  node: TSESTree.Node,
+  reportAs: TSESTree.Node = node
+): boolean {
+  const assignedTo = getAssignation(checker, parserServices, node);
+  const currentScope = context.sourceCode.getScope(node);
+
+  // Check if is assigned to variables
+  if (assignedTo) {
+    const variable = currentScope.set.get(assignedTo.name);
+    const references =
+      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
+
+    /**
+     * Try to mark the first assigned variable to be reported, if not, keep
+     * the original one.
+     */
+    reportAs = variable?.references[0].identifier ?? reportAs;
+
+    // check if any reference is handled by recursive calling
+    return references.some(
+      (ref) =>
+        !processSelector(
+          context,
+          checker,
+          parserServices,
+          ref.identifier,
+          reportAs,
+          true
+        )
+    );
+  }
+
+  return false;
+}

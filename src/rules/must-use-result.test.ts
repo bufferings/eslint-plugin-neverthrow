@@ -145,6 +145,15 @@ ruleTester.run('must-use-result', rule, {
     `// Without definitions
       getNormal()
     `,
+    injectResult(
+      'Await Promise handled properly',
+      `
+      (await getRes()).unwrapOr(5);              // case1
+      const res1 = (await getRes()).unwrapOr(5); // case2
+      const res2 = await getRes();               // case3
+      res2.unwrapOr(5);
+      `
+    ),
   ],
   invalid: [
     {
@@ -216,6 +225,23 @@ ruleTester.run('must-use-result', rule, {
       `
       ),
       errors: [
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+      ],
+    },
+    {
+      code: injectResult(
+        'Await Promise is not handled properly',
+        `
+        const res = await getRes(); // case1
+        const res1 = await getRes(); // case2
+        res1.unwrapOr;
+        
+        await getRes(); // case3
+        `
+      ),
+      errors: [
+        { messageId: MessageIds.MUST_USE },
         { messageId: MessageIds.MUST_USE },
         { messageId: MessageIds.MUST_USE },
       ],
