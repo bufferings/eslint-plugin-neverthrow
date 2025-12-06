@@ -49,7 +49,7 @@
     "eslint-plugin-n": "17.23.1",
     "eslint-plugin-simple-import-sort": "12.1.1",
     "husky": "9.1.7",
-    "lint-staged": "15.2.10",
+    "lint-staged": "16.2.7",
     "neverthrow": "8.2.0",
     "prettier": "3.7.2",
     "rimraf": "6.1.2",
