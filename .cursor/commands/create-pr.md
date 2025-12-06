@@ -12,7 +12,7 @@ First, read `.cursor/rules/git-and-github.mdc` to understand the rules for this 
 
 1. **Fetch latest from origin**
 
-   - Run `git fetch origin` to get the latest state of remote branches
+   - Run `git fetch origin -p` to get the latest state and prune deleted branches
 
 2. **Review commit history**
 
