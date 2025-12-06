@@ -1,13 +1,12 @@
 import eslint from '@eslint/js';
+import { defineConfig, globalIgnores } from 'eslint/config';
 import eslintConfigPrettier from 'eslint-config-prettier/flat';
 import eslintPlugin from 'eslint-plugin-eslint-plugin';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
 import tseslint from 'typescript-eslint';
 
-export default tseslint.config(
-  {
-    ignores: ['**/dist/', '**/.gitignore'],
-  },
+export default defineConfig(
+  globalIgnores(['**/dist/']),
   eslint.configs.recommended,
   tseslint.configs.recommendedTypeChecked,
   eslintPlugin.configs.recommended,
