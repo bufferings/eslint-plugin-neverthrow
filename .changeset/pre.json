@@ -4,5 +4,5 @@
   "initialVersions": {
     "@bufferings/eslint-plugin-neverthrow": "0.2.12"
   },
-  "changesets": []
+  "changesets": ["fix-type-portability", "migrate-to-changesets"]
 }
