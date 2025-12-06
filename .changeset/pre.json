@@ -1,0 +1,8 @@
+{
+  "mode": "pre",
+  "tag": "beta",
+  "initialVersions": {
+    "@bufferings/eslint-plugin-neverthrow": "0.2.12"
+  },
+  "changesets": []
+}
