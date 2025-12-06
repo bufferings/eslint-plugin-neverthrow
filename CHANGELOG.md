@@ -1,5 +1,14 @@
 # @bufferings/eslint-plugin-neverthrow
 
+## 0.3.0-beta.1
+
+### Patch Changes
+
+- [#31](https://github.com/bufferings/eslint-plugin-neverthrow/pull/31) [`6c6dd7e`](https://github.com/bufferings/eslint-plugin-neverthrow/commit/6c6dd7e5ab547cca3e1c4c2fdb5600a96af237d4) Thanks [@bufferings](https://github.com/bufferings)! - Fix Result detection issues
+  - Fix await expressions to be handled properly in Result detection
+  - Add support for isOk/isErr methods as valid Result handling
+  - Fix false positive on class property definitions (ClassProperty → PropertyDefinition)
+
 ## 0.3.0-beta.0
 
 ### Minor Changes
