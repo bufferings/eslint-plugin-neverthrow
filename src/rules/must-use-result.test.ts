@@ -145,6 +145,41 @@ ruleTester.run('must-use-result', rule, {
     `// Without definitions
       getNormal()
     `,
+    injectResult(
+      'Await Promise handled properly',
+      `
+      (await getRes()).unwrapOr(5);              // case1
+      const res1 = (await getRes()).unwrapOr(5); // case2
+      const res2 = await getRes();               // case3
+      res2.unwrapOr(5);
+      `
+    ),
+    injectResult(
+      'Call isOk or isErr',
+      `
+      const result = getResult()
+      if (result.isOk()) {
+        return ok()
+      }
+      `
+    ),
+    injectResult(
+      'Call isOk or isErr',
+      `
+      const result = getResult()
+      if (!result.isErr()) {
+        return ok()
+      }
+      `
+    ),
+    injectResult(
+      'Class property with Result type should not report error',
+      `
+      class MyClass {
+        result = getResult();
+      }
+      `
+    ),
   ],
   invalid: [
     {
@@ -219,6 +254,35 @@ ruleTester.run('must-use-result', rule, {
         { messageId: MessageIds.MUST_USE },
         { messageId: MessageIds.MUST_USE },
       ],
+    },
+    {
+      code: injectResult(
+        'Await Promise is not handled properly',
+        `
+        const res = await getResult();
+        const res1 = await getResult();
+        res1.unwrapOr;
+        
+        await getResult();
+        `
+      ),
+      errors: [
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+        { messageId: MessageIds.MUST_USE },
+      ],
+    },
+    {
+      code: injectResult(
+        'isOk property access without call',
+        `
+        const res = getResult();
+        if (res.isOk) {
+          return ok()
+        }
+        `
+      ),
+      errors: [{ messageId: MessageIds.MUST_USE }],
     },
   ],
 });

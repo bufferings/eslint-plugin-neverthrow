@@ -14,9 +14,10 @@ function matchAny(nodeTypes: string[]) {
   return `:matches(${nodeTypes.join(', ')})`;
 }
 const resultSelector = matchAny([
-  // 'Identifier',
-  'CallExpression',
-  'NewExpression',
+  // AST_NODE_TYPES.Identifier,
+  AST_NODE_TYPES.CallExpression,
+  AST_NODE_TYPES.NewExpression,
+  AST_NODE_TYPES.AwaitExpression,
 ]);
 
 const resultProperties = [
@@ -29,13 +30,9 @@ const resultProperties = [
 ];
 
 const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
+const checkedMethods = ['isOk', 'isErr'];
 
-// evaluates inside the expression if it is result
-// if result check that it is handled in the expression
-// if it is unhandled checks if it is assigned or used as an argument to a function
-// if it was assigned unhandled checks the entire variable block for handles
-//   otherwise it was handled properly
-
+// evaluate if the node is result-like
 function isResultLike(
   checker: TypeChecker,
   parserServices: ParserServices,
@@ -70,10 +67,15 @@ function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
-  const memberExpresion = node.parent;
-  if (memberExpresion?.type === AST_NODE_TYPES.MemberExpression) {
-    const methodName = findMemberName(memberExpresion);
-    const methodIsCalled = isMemberCalledFn(memberExpresion);
+  // For AwaitExpression, check if the awaited result is handled
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
+    return isHandledResult(node.argument);
+  }
+
+  const memberExpression = node.parent;
+  if (memberExpression?.type === AST_NODE_TYPES.MemberExpression) {
+    const methodName = findMemberName(memberExpression);
+    const methodIsCalled = isMemberCalledFn(memberExpression);
     if (methodName && handledMethods.includes(methodName) && methodIsCalled) {
       return true;
     }
@@ -84,7 +86,27 @@ function isHandledResult(node: TSESTree.Node): boolean {
   }
   return false;
 }
-const endTransverse = ['BlockStatement', 'Program'];
+
+const isCheckedResult = (node: TSESTree.Node): boolean => {
+  if (node.type === AST_NODE_TYPES.Identifier) {
+    if (node.parent?.type === AST_NODE_TYPES.MemberExpression) {
+      const propertyName =
+        node.parent.property.type === AST_NODE_TYPES.Identifier
+          ? node.parent.property.name
+          : null;
+      const parentIsCalledExpression =
+        node.parent.parent?.type === AST_NODE_TYPES.CallExpression;
+      return (
+        !!propertyName &&
+        checkedMethods.includes(propertyName) &&
+        parentIsCalledExpression
+      );
+    }
+  }
+  return false;
+};
+
+const endTransverse = [AST_NODE_TYPES.BlockStatement, AST_NODE_TYPES.Program];
 function getAssignation(
   checker: TypeChecker,
   parserServices: ParserServices,
@@ -120,6 +142,13 @@ function isReturned(
   if (node.type === AST_NODE_TYPES.Program) {
     return false;
   }
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
+    // For AwaitExpression, check if the parent is returned
+    if (!node.parent) {
+      return false;
+    }
+    return isReturned(checker, parserServices, node.parent);
+  }
   if (!node.parent) {
     return false;
   }
@@ -127,18 +156,22 @@ function isReturned(
 }
 
 const ignoreParents = [
-  'ClassDeclaration',
-  'FunctionDeclaration',
-  'MethodDefinition',
-  'ClassProperty',
+  AST_NODE_TYPES.ClassDeclaration,
+  AST_NODE_TYPES.FunctionDeclaration,
+  AST_NODE_TYPES.MethodDefinition,
+  AST_NODE_TYPES.PropertyDefinition,
 ];
 
+/**
+ * @returns A boolean indicating whether the node is not handled.
+ */
 function processSelector(
   context: TSESLint.RuleContext<MessageIds, []>,
   checker: TypeChecker,
   parserServices: ParserServices,
   node: TSESTree.Node,
-  reportAs = node
+  reportAs = node,
+  isReferenceNode = false
 ): boolean {
   if (node.parent?.type.startsWith('TS')) {
     return false;
@@ -146,43 +179,58 @@ function processSelector(
   if (node.parent && ignoreParents.includes(node.parent.type)) {
     return false;
   }
-  if (!isResultLike(checker, parserServices, node)) {
+
+  // For AwaitExpression, check if the argument is result-like
+  if (node.type === AST_NODE_TYPES.AwaitExpression) {
+    if (!isResultLike(checker, parserServices, node.argument)) {
+      return false;
+    }
+  } else {
+    // For other node types, check if the node itself is result-like
+    if (!isResultLike(checker, parserServices, node)) {
+      return false;
+    }
+  }
+
+  // Skip CallExpression nodes that are inside AwaitExpression to avoid duplicate reporting
+  if (
+    node.type === AST_NODE_TYPES.CallExpression &&
+    node.parent?.type === AST_NODE_TYPES.AwaitExpression
+  ) {
     return false;
   }
 
   if (isHandledResult(node)) {
     return false;
   }
-  // return getResult()
+
+  if (isCheckedResult(node)) {
+    return false;
+  }
+
   if (isReturned(checker, parserServices, node)) {
     return false;
   }
 
-  const assignedTo = getAssignation(checker, parserServices, node);
-  const currentScope = context.sourceCode.getScope(node);
-
-  // Check if is assigned
-  if (assignedTo) {
-    const variable = currentScope.set.get(assignedTo.name);
-    const references =
-      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
-    if (references.length > 0) {
-      return references.some((ref) =>
-        processSelector(
-          context,
-          checker,
-          parserServices,
-          ref.identifier,
-          reportAs
-        )
-      );
-    }
+  const anyHandled = handleAssignation(
+    context,
+    checker,
+    parserServices,
+    node,
+    reportAs
+  );
+  if (anyHandled) {
+    return false;
   }
 
-  context.report({
-    node: reportAs,
-    messageId: MessageIds.MUST_USE,
-  });
+  // make sure not reporting to the same node multiple times during recursive calls
+  if (!isReferenceNode) {
+    context.report({
+      node: reportAs,
+      messageId: MessageIds.MUST_USE,
+    });
+  }
+
   return true;
 }
 
@@ -220,3 +268,42 @@ export const rule = createRule({
   name: 'must-use-result',
   defaultOptions: [],
 });
+
+function handleAssignation(
+  context: TSESLint.RuleContext<MessageIds, []>,
+  checker: TypeChecker,
+  parserServices: ParserServices,
+  node: TSESTree.Node,
+  reportAs: TSESTree.Node = node
+): boolean {
+  const assignedTo = getAssignation(checker, parserServices, node);
+  const currentScope = context.sourceCode.getScope(node);
+
+  // Check if is assigned to variables
+  if (assignedTo) {
+    const variable = currentScope.set.get(assignedTo.name);
+    const references =
+      variable?.references.filter((ref) => ref.identifier !== assignedTo) ?? [];
+
+    /**
+     * Try to mark the first assigned variable to be reported, if not, keep
+     * the original one.
+     */
+    reportAs = variable?.references[0].identifier ?? reportAs;
+
+    // check if any reference is handled by recursive calling
+    return references.some(
+      (ref) =>
+        !processSelector(
+          context,
+          checker,
+          parserServices,
+          ref.identifier,
+          reportAs,
+          true
+        )
+    );
+  }
+
+  return false;
+}
