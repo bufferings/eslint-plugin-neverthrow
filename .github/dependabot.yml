@@ -11,6 +11,11 @@ updates:
       prefix: 'fix'
       prefix-development: 'chore'
       include: 'scope'
+    ignore:
+      # Keep @types/node on 20.x to match engines.node minimum version
+      - dependency-name: '@types/node'
+        update-types:
+          - 'version-update:semver-major'
     groups:
       dev-dependencies:
         dependency-type: 'development'
