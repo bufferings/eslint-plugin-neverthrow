@@ -10,26 +10,30 @@ First, read `.cursor/rules/git-and-github.mdc` to understand the rules for this 
 
 ## Steps
 
-1. **Review commit history**
+1. **Fetch latest from origin**
+
+   - Run `git fetch origin` to get the latest state of remote branches
+
+2. **Review commit history**
 
    - Run `git log origin/main..HEAD --oneline` to see commits not in main
 
-2. **Decide on a descriptive branch name**
+3. **Decide on a descriptive branch name**
 
    - Based on the commits, decide a descriptive branch name
    - Example: `chore/migrate-to-changesets`, `feat/add-new-rule`, `fix/handle-edge-case`
 
-3. **Push with the descriptive branch name**
+4. **Push with the descriptive branch name**
 
    - Run `git push origin HEAD:<branch-name>` to push with the chosen name
    - Example: `git push origin HEAD:chore/migrate-to-changesets`
 
-4. **Create PR title and body**
+5. **Create PR title and body**
 
    - Based on the commits, create an appropriate PR title and body
    - Title should follow Conventional Commits format (e.g., `feat: add new feature`)
 
-5. **Create PR**
+6. **Create PR**
 
    - Use `gh pr create` command to create the PR
    - **Important**: This repository has a fork structure, so always specify the `--repo` option
@@ -45,4 +49,4 @@ gh pr create --repo bufferings/eslint-plugin-neverthrow --base main --head <bran
 
 - `--repo bufferings/eslint-plugin-neverthrow` is required (multiple remotes exist)
 - `--base main` is the default branch
-- `--head` should be the current branch name
+- `--head` should be the pushed branch name (e.g., `chore/migrate-to-changesets`)
