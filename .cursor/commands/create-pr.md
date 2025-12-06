@@ -7,22 +7,22 @@ First, read `.cursor/rules/git-and-github.mdc` to understand the rules for this 
 ## Prerequisites
 
 - All changes must be committed
-- The branch must be pushed to remote
 
 ## Steps
 
-1. **Check current branch name**
-
-   - Run `git branch --show-current` to get the current branch name
-
-2. **Check for unpushed commits**
-
-   - Run `git status` to check for differences with remote
-   - If there are unpushed commits, ask whether to push first
-
-3. **Review commit history**
+1. **Review commit history**
 
    - Run `git log origin/main..HEAD --oneline` to see commits not in main
+
+2. **Decide on a descriptive branch name**
+
+   - Based on the commits, decide a descriptive branch name
+   - Example: `chore/migrate-to-changesets`, `feat/add-new-rule`, `fix/handle-edge-case`
+
+3. **Push with the descriptive branch name**
+
+   - Run `git push origin HEAD:<branch-name>` to push with the chosen name
+   - Example: `git push origin HEAD:chore/migrate-to-changesets`
 
 4. **Create PR title and body**
 
@@ -33,6 +33,7 @@ First, read `.cursor/rules/git-and-github.mdc` to understand the rules for this 
 
    - Use `gh pr create` command to create the PR
    - **Important**: This repository has a fork structure, so always specify the `--repo` option
+   - Use the pushed branch name for `--head`
 
 ## gh pr create Command Format
 
