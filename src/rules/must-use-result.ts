@@ -223,7 +223,7 @@ function processSelector(
     return false;
   }
 
-  // make sure not reporting to the same node mutiple times during recursing calls
+  // make sure not reporting to the same node multiple times during recursive calls
   if (!isReferenceNode) {
     context.report({
       node: reportAs,
