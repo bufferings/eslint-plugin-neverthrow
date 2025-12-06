@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unsafe-enum-comparison */
 import {
   AST_NODE_TYPES,
   ESLintUtils,
@@ -30,13 +31,9 @@ const resultProperties = [
 ];
 
 const handledMethods = ['match', 'unwrapOr', '_unsafeUnwrap'];
+const checkedMethods = ['isOk', 'isErr'];
 
-// evaluates inside the expression if it is result
-// if result check that it is handled in the expression
-// if it is unhandled checks if it is assigned or used as an argument to a function
-// if it was assigned unhandled checks the entire variable block for handles
-//   otherwise it was handled properly
-
+// evaluate if the node is result-like
 function isResultLike(
   checker: TypeChecker,
   parserServices: ParserServices,
@@ -71,6 +68,11 @@ function isMemberCalledFn(node?: TSESTree.MemberExpression): boolean {
 }
 
 function isHandledResult(node: TSESTree.Node): boolean {
+  // For AwaitExpression, check if the awaited result is handled
+  if (node.type === 'AwaitExpression') {
+    return isHandledResult(node.argument);
+  }
+
   const memberExpresion = node.parent;
   if (memberExpresion?.type === AST_NODE_TYPES.MemberExpression) {
     const methodName = findMemberName(memberExpresion);
@@ -85,6 +87,26 @@ function isHandledResult(node: TSESTree.Node): boolean {
   }
   return false;
 }
+
+const isCheckedResult = (node: TSESTree.Node): boolean => {
+  if (node.type === 'Identifier') {
+    if (node.parent?.type === 'MemberExpression') {
+      const propertyName =
+        node.parent.property.type === 'Identifier'
+          ? node.parent.property.name
+          : null;
+      const parentIsCalledExpression =
+        node.parent.parent?.type === 'CallExpression';
+      return (
+        !!propertyName &&
+        checkedMethods.includes(propertyName) &&
+        parentIsCalledExpression
+      );
+    }
+  }
+  return false;
+};
+
 const endTransverse = ['BlockStatement', 'Program'];
 function getAssignation(
   checker: TypeChecker,
@@ -121,6 +143,13 @@ function isReturned(
   if (node.type === AST_NODE_TYPES.Program) {
     return false;
   }
+  if (node.type === 'AwaitExpression') {
+    // For AwaitExpression, check if the parent is returned
+    if (!node.parent) {
+      return false;
+    }
+    return isReturned(checker, parserServices, node.parent);
+  }
   if (!node.parent) {
     return false;
   }
@@ -151,14 +180,35 @@ function processSelector(
   if (node.parent && ignoreParents.includes(node.parent.type)) {
     return false;
   }
-  if (!isResultLike(checker, parserServices, node)) {
+
+  // For AwaitExpression, check if the argument is result-like
+  if (node.type === 'AwaitExpression') {
+    if (!isResultLike(checker, parserServices, node.argument)) {
+      return false;
+    }
+  } else {
+    // For other node types, check if the node itself is result-like
+    if (!isResultLike(checker, parserServices, node)) {
+      return false;
+    }
+  }
+
+  // Skip CallExpression nodes that are inside AwaitExpression to avoid duplicate reporting
+  if (
+    node.type === 'CallExpression' &&
+    node.parent?.type === 'AwaitExpression'
+  ) {
     return false;
   }
 
   if (isHandledResult(node)) {
     return false;
   }
-  // return getResult()
+
+  if (isCheckedResult(node)) {
+    return false;
+  }
+
   if (isReturned(checker, parserServices, node)) {
     return false;
   }
