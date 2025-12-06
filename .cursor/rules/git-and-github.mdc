@@ -1,0 +1,43 @@
+---
+description: Git and GitHub CLI rules for this project
+alwaysApply: false
+---
+
+# Git and GitHub CLI Rules
+
+## GitHub CLI (gh) Commands
+
+This repository has multiple remotes (`origin` and `upstream`) because it's a fork structure.
+When using `gh` commands, always specify the `--repo` option to avoid ambiguity.
+
+### Creating Pull Requests
+
+```bash
+# Good: Always specify --repo
+gh pr create --repo bufferings/eslint-plugin-neverthrow --base main --head branch-name --title "title" --body "body"
+
+# Bad: May fail due to multiple remotes
+gh pr create --base main --head branch-name --title "title" --body "body"
+```
+
+## Release Management
+
+This project uses **changesets** for release management.
+
+### Commands
+
+- `pnpm changeset` - Create a new changeset
+- `pnpm version-packages` - Update versions based on changesets
+- `pnpm release` - Publish to npm
+
+### Beta/Prerelease
+
+```bash
+# Enter beta mode
+pnpm changeset pre enter beta
+
+# Exit beta mode
+pnpm changeset pre exit
+```
+
+When in beta mode, versions will be like `0.2.13-beta.0`.
