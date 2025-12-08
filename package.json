@@ -51,7 +51,7 @@
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
     "neverthrow": "8.2.0",
-    "prettier": "3.7.2",
+    "prettier": "3.7.3",
     "rimraf": "6.1.2",
     "typescript": "5.9.3",
     "typescript-eslint": "8.48.0",
