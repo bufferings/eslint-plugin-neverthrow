@@ -41,8 +41,8 @@
     "@eslint/js": "9.39.1",
     "@types/eslint": "9.6.1",
     "@types/node": "20.19.25",
-    "@typescript-eslint/parser": "8.48.0",
-    "@typescript-eslint/rule-tester": "8.48.0",
+    "@typescript-eslint/parser": "8.48.1",
+    "@typescript-eslint/rule-tester": "8.48.1",
     "eslint": "9.39.1",
     "eslint-config-prettier": "10.1.8",
     "eslint-plugin-eslint-plugin": "7.2.0",
@@ -51,11 +51,11 @@
     "husky": "9.1.7",
     "lint-staged": "16.2.7",
     "neverthrow": "8.2.0",
-    "prettier": "3.7.2",
+    "prettier": "3.7.4",
     "rimraf": "6.1.2",
     "typescript": "5.9.3",
-    "typescript-eslint": "8.48.0",
-    "vitest": "4.0.14"
+    "typescript-eslint": "8.48.1",
+    "vitest": "4.0.15"
   },
   "lint-staged": {
     "**/*": "pnpm fix"
